@@ -28,12 +28,24 @@ public class WordLadder {
 
     }
 
-    public WordLadder ( String a_file_name){
+    public WordLadder(String a_file_name){
+        this(a_file_name, null, null);
+    }
+
+    public WordLadder (String a_file_name, String passedSource, String passedDestination){
 
         WordCollection wordCollection = new WordCollection(a_file_name);
        WordCollection selectedSizeCollection = wordCollection.getCollectionAtSpecificLength(words_size);
        //System.out.println("done");
-        
+
+        if (passedSource != null){
+            source = passedSource;
+        }
+
+        if (passedDestination != null){
+            destination = passedDestination;
+        }
+
         //userInput method allows user command line input for word size, source word, and destination word.
        //userInput();
 
@@ -92,6 +104,14 @@ public class WordLadder {
     public double getTimeForPath(){
 
         return 0;
+    }
+
+    public void setSource(String passedSource){
+        source =  passedSource;
+    }
+
+    public void setDestination(String passedDestination){
+       destination =  passedDestination;
     }
 }
 
