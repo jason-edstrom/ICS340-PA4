@@ -1,7 +1,10 @@
+import javax.print.attribute.standard.Destination;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,6 +33,9 @@ public class WordLadder {
         WordCollection wordCollection = new WordCollection(a_file_name);
        WordCollection selectedSizeCollection = wordCollection.getCollectionAtSpecificLength(words_size);
        //System.out.println("done");
+        
+        //userInput method allows user command line input for word size, source word, and destination word.
+       //userInput();
 
         if (source.length() != words_size){
             throw new IllegalArgumentException("Source word is not the correct length");
@@ -51,11 +57,41 @@ public class WordLadder {
         if  (!destinationValid){
             throw new IllegalArgumentException(destination + " doesn't exist in the dictionary.");
         }
+      System.out.println("Source: " + source);
+      System.out.println("Desitnation: " + destination);
+      System.out.println("Word Length: " + words_size);
 
+    }
+
+    private void userInput() {
+     Scanner scanner = new Scanner(System.in);
+     System.out.print("Word Size: ");
+     words_size = scanner.nextInt();
+     System.out.print("Source word (" + words_size + " Characters only): ");
+     source = scanner.next();
+     System.out.print("Destination word (" + words_size + " Characters only): ");
+     destination = scanner.next();
+    }
+
+    public void findPath(String source, String destination){
 
     }
 
+    public ArrayList<String> getWordList(){
 
 
+        return null;
     }
+
+    public double getTimeForGraph(){
+
+
+        return 0;
+    }
+
+    public double getTimeForPath(){
+
+        return 0;
+    }
+}
 
