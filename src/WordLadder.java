@@ -18,8 +18,8 @@ import java.util.*;
  */
 public class WordLadder {
     private Map<Integer, ArrayList<String>> dictionary = new HashMap<Integer, ArrayList<String>>();
-    String source = "bleed";
-    String destination = "blood";
+    String source = "bloom";
+    String destination = "green";
     int words_size = 5;
     boolean sourceValid = false;
     boolean destinationValid = false;
@@ -43,7 +43,7 @@ public class WordLadder {
     }
 
     public WordLadder (String a_file_name, String passedSource, String passedDestination){
-       before = System.currentTimeMillis();
+
         WordCollection wordCollection = new WordCollection(a_file_name);
         //before = System.currentTimeMillis();
        WordCollection selectedSizeCollection = wordCollection.getCollectionAtSpecificLength(words_size);
@@ -89,7 +89,7 @@ public class WordLadder {
 
       //dictionary.put(words_size, words);
 
-
+    before = System.currentTimeMillis();
      for (String s : words){
         //for (int index = 0; index < words.size(); index++){ //Stops concurrent modification error
        // String s = words.get(index);                      //
@@ -180,7 +180,7 @@ public class WordLadder {
     public ArrayList<String> getWordList(){
 
 
-        return null;
+        return words;
     }
 
     public double getTimeForGraph(){
