@@ -72,4 +72,8 @@ public class WordCollection {
         }
         return false;
     }
+
+    public ArrayList<String> getWords(){
+        return words;
+    }
 }

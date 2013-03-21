@@ -3,8 +3,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
+
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,13 +17,22 @@ import java.util.Scanner;
  * Java Class: PACKAGE_NAME
  */
 public class WordLadder {
-    String source = "blood";
-    String destination = "bleed";
+    private Map<Integer, ArrayList<String>> dictionary = new HashMap<Integer, ArrayList<String>>();
+    String source = "bleed";
+    String destination = "blood";
     int words_size = 5;
     boolean sourceValid = false;
     boolean destinationValid = false;
-
-
+    ArrayList<String> results = new ArrayList<String>();
+    ArrayList<String> builder = new ArrayList<String>();
+    ArrayList<String> words = new ArrayList<String>();
+    String buildSource = null;
+    String buildDestination = null;
+    TestGraph g = new TestGraph();
+    long before = 0;
+    long after = 0;
+    long buildGraphTime = 0;
+    long findPathTime = 0;
     public WordLadder (){
        this("c:\\ics340\\words.txt");
 
@@ -33,8 +43,9 @@ public class WordLadder {
     }
 
     public WordLadder (String a_file_name, String passedSource, String passedDestination){
-
+       before = System.currentTimeMillis();
         WordCollection wordCollection = new WordCollection(a_file_name);
+        //before = System.currentTimeMillis();
        WordCollection selectedSizeCollection = wordCollection.getCollectionAtSpecificLength(words_size);
        //System.out.println("done");
 
@@ -70,8 +81,55 @@ public class WordLadder {
             throw new IllegalArgumentException(destination + " doesn't exist in the dictionary.");
         }
       System.out.println("Source: " + source);
-      System.out.println("Desitnation: " + destination);
+      System.out.println("Destination: " + destination);
       System.out.println("Word Length: " + words_size);
+
+     words = selectedSizeCollection.getWords();
+
+
+      //dictionary.put(words_size, words);
+
+
+     for (String s : words){
+        //for (int index = 0; index < words.size(); index++){ //Stops concurrent modification error
+       // String s = words.get(index);                      //
+          builder = compareWords(s, words);                 //
+          //Stops double edging.
+         // words.remove(s);
+          //int indexSource = 0;
+          //int indexDest = 0;
+         //indexSource = words.indexOf(s);
+         //indexDest = indexSource +1;
+          //f (buildSource == null){
+          //buildSource = s;
+          //}else{
+          //    buildDestination = s;
+          // }
+
+          //if (indexDest > words_size){
+           // buildDestination = null;
+          //}else{
+          //buildDestination = words.get(indexDest);
+          //}
+          buildSource = s;
+
+          for(String net : builder){
+          double cost = Math.random()*100;
+          buildDestination = net;
+          g.addEdge(buildSource, buildDestination, cost);
+          }
+
+          //buildSource = buildDestination;
+
+      }
+      after  = System.currentTimeMillis();
+      buildGraphTime = after - before;
+      System.out.println( g.getVertexMapSize() + " vertices" );
+      System.out.println("Time to build graph: " + buildGraphTime);
+
+        findPath(source, destination);
+
+
 
     }
 
@@ -85,9 +143,39 @@ public class WordLadder {
      destination = scanner.next();
     }
 
-    public void findPath(String source, String destination){
+    public void findPath(String passedSource, String passedDestination){
+        before  = System.currentTimeMillis();
+        g.unweighted(passedSource);
+        g.printPath(passedDestination);
+        after  = System.currentTimeMillis();
+        findPathTime = after - before;
+        System.out.println("Time to find path: " + findPathTime);
+
 
     }
+
+    public ArrayList<String> compareWords(String word1, ArrayList<String> wordsToTest){
+        ArrayList<String> buildWords = new ArrayList<String>();
+        for (String word2 : wordsToTest){
+        int mismatchCounter = 0;
+
+        for (int index = 0; index < words_size; index++){
+            if (word1.charAt(index) != word2.charAt(index)) {
+                mismatchCounter++;
+            }
+            /*else if ( mismatchCounter == 0){
+                words.remove(word1);
+            }*/
+        }
+            if (mismatchCounter == 1){
+                buildWords.add(word2);
+            }
+        }
+
+        return buildWords;
+    }
+
+
 
     public ArrayList<String> getWordList(){
 
@@ -98,12 +186,12 @@ public class WordLadder {
     public double getTimeForGraph(){
 
 
-        return 0;
+        return buildGraphTime;
     }
 
     public double getTimeForPath(){
 
-        return 0;
+        return findPathTime;
     }
 
     public void setSource(String passedSource){
@@ -113,5 +201,7 @@ public class WordLadder {
     public void setDestination(String passedDestination){
        destination =  passedDestination;
     }
+
+
 }
 
