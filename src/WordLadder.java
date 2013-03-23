@@ -227,13 +227,35 @@ public class WordLadder {
 
 
     public static void main(String[] args) {
+        boolean isWindows = false;
+        //OS Detection
+        if (System.getProperty("os.name").startsWith("Windows")) {
+            // includes: Windows 2000,  Windows 95, Windows 98, Windows NT, Windows Vista, Windows XP
+            //tfFilePat.setText("c:\\ics340\\words.txt");
+            System.out.println("Detected Windows: " + System.getProperty("os.name"));
+            isWindows = true;
+        } else {
+            //tfFilePat.setText("/Users/jasonedstrom/ics340/d1.txt");
+            System.out.println("Detected Mac OS X: " + System.getProperty("os.name"));
+            isWindows = false;
+        }
         if (args.length > 2){
             throw new ArrayStoreException("There are too many arguments for this program to run: " + args.length);
-        } else if (args.length == 0){
-            WordLadder wordLadder = new WordLadder("d1.txt");
+        }else if (args.length == 1){
+            throw new ArrayStoreException("There are too few arguments for this program to run: " + args.length);
+        }else if (args.length == 0){
+            if (isWindows){
+                WordLadder wordLadder = new WordLadder("c:\\ics340\\words.txt");
+            }else{
+                WordLadder wordLadder = new WordLadder("/Users/jasonedstrom/ics340/d1.txt");
+            }
+
         }else{
-            //WordLadder wordLadder = new WordLadder("c:\\ics340\\words.txt", args[0], args[1]);
-            WordLadder wordLadder = new WordLadder("d1.txt", args[0], args[1]);
+            if (isWindows){
+            WordLadder wordLadder = new WordLadder("c:\\ics340\\words.txt", args[0], args[1]);
+            }else{
+            WordLadder wordLadder = new WordLadder("/Users/jasonedstrom/ics340/d1.txt", args[0], args[1]);
+            }
         }
     }
 
