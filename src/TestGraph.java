@@ -116,6 +116,10 @@ public class TestGraph {
 
      */
 
+    public Map<String, Vertex> getVertexMap(){
+        return vertexMap;
+    }
+
     public void unweighted (String sourceWord){
         clearAll();
 

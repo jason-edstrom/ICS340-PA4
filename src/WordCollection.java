@@ -20,7 +20,9 @@ public class WordCollection {
 
     }
 
-
+    public WordCollection (ArrayList <String> stuff){
+        words = stuff;
+    }
     public WordCollection (String file_name){
 
 
@@ -74,6 +76,25 @@ public class WordCollection {
     }
 
     public ArrayList<String> getWords(){
+
         return words;
+    }
+
+    public void setWords(ArrayList<String> outwords){
+
+        words = outwords;
+
+    }
+
+    public String toString(){
+        String tempString = null;
+          for (String s : words){
+              if (tempString == null){
+            tempString = s + " \n";
+              }else{
+                  tempString = tempString + s + "\n";
+              }
+          }
+        return tempString;
     }
 }

@@ -1,10 +1,3 @@
-import javax.print.attribute.standard.Destination;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
-import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -17,22 +10,24 @@ import java.util.*;
  * Java Class: PACKAGE_NAME
  */
 public class WordLadder {
-    private Map<Integer, ArrayList<String>> dictionary = new HashMap<Integer, ArrayList<String>>();
-    String source = "bloom";
-    String destination = "green";
+    private Map<String,Vertex> dictionary = new HashMap<String,Vertex>( );
+    String source = null;
+    String destination = null;
     int words_size = 5;
     boolean sourceValid = false;
     boolean destinationValid = false;
-    ArrayList<String> results = new ArrayList<String>();
+    ArrayList<String> leftover = null;
     ArrayList<String> builder = new ArrayList<String>();
     ArrayList<String> words = new ArrayList<String>();
     String buildSource = null;
     String buildDestination = null;
     TestGraph g = new TestGraph();
+
     long before = 0;
     long after = 0;
     long buildGraphTime = 0;
     long findPathTime = 0;
+
     public WordLadder (){
        this("c:\\ics340\\words.txt");
 
@@ -40,6 +35,19 @@ public class WordLadder {
 
     public WordLadder(String a_file_name){
         this(a_file_name, null, null);
+    }
+
+    public WordLadder(ArrayList<String> gui_List){
+         setWordList(gui_List);
+
+    }
+
+    public WordLadder(String gui_file_name, int word_length){
+        WordCollection wordCollection = new WordCollection(gui_file_name);
+        //before = System.currentTimeMillis();
+        WordCollection selectedSizeCollection = wordCollection.getCollectionAtSpecificLength(word_length);
+        words = selectedSizeCollection.getWords();
+
     }
 
     public WordLadder (String a_file_name, String passedSource, String passedDestination){
@@ -57,9 +65,10 @@ public class WordLadder {
             destination = passedDestination;
         }
 
-        //userInput method allows user command line input for word size, source word, and destination word.
-       //userInput();
-
+        //userInput method allows user command line input for word size, source word, and destination word if no command line arguments
+        if ((source == null)||(destination == null)){
+        userInput();
+        }
         if (source.length() != words_size){
             throw new IllegalArgumentException("Source word is not the correct length");
         }
@@ -87,30 +96,13 @@ public class WordLadder {
      words = selectedSizeCollection.getWords();
 
 
-      //dictionary.put(words_size, words);
+
 
     before = System.currentTimeMillis();
      for (String s : words){
-        //for (int index = 0; index < words.size(); index++){ //Stops concurrent modification error
-       // String s = words.get(index);                      //
+                         //
           builder = compareWords(s, words);                 //
-          //Stops double edging.
-         // words.remove(s);
-          //int indexSource = 0;
-          //int indexDest = 0;
-         //indexSource = words.indexOf(s);
-         //indexDest = indexSource +1;
-          //f (buildSource == null){
-          //buildSource = s;
-          //}else{
-          //    buildDestination = s;
-          // }
 
-          //if (indexDest > words_size){
-           // buildDestination = null;
-          //}else{
-          //buildDestination = words.get(indexDest);
-          //}
           buildSource = s;
 
           for(String net : builder){
@@ -119,15 +111,22 @@ public class WordLadder {
           g.addEdge(buildSource, buildDestination, cost);
           }
 
-          //buildSource = buildDestination;
+
 
       }
       after  = System.currentTimeMillis();
       buildGraphTime = after - before;
       System.out.println( g.getVertexMapSize() + " vertices" );
-      System.out.println("Time to build graph: " + buildGraphTime);
-
-        findPath(source, destination);
+      System.out.println("Time to build graph: " + buildGraphTime + " milliseconds");
+      dictionary = g.getVertexMap();
+        /*leftover = selectedSizeCollection.getWords();
+        for (String s : words){
+        if (dictionary.containsValue(s)){
+            leftover.remove(s);
+        }
+        }
+        */
+      findPath(source, destination);
 
 
 
@@ -145,11 +144,17 @@ public class WordLadder {
 
     public void findPath(String passedSource, String passedDestination){
         before  = System.currentTimeMillis();
+        if (!(dictionary.containsKey(destination))){
+            throw new IllegalArgumentException(destination + " is unreachable by way of " + source + ".");
+        }
+        if (!(dictionary.containsKey(source))){
+            throw new IllegalArgumentException(destination + " is unreachable by way of " + source + ".");
+        }
         g.unweighted(passedSource);
         g.printPath(passedDestination);
         after  = System.currentTimeMillis();
         findPathTime = after - before;
-        System.out.println("Time to find path: " + findPathTime);
+        System.out.println("Time to find path: " + findPathTime  + " milliseconds");
 
 
     }
@@ -203,5 +208,24 @@ public class WordLadder {
     }
 
 
+    public static void main(String[] args) {
+        if (args.length > 2){
+            throw new ArrayStoreException("There are too many arguments for this program to run: " + args.length);
+        } else if (args.length == 0){
+            WordLadder wordLadder = new WordLadder("d1.txt");
+        }else{
+            //WordLadder wordLadder = new WordLadder("c:\\ics340\\words.txt", args[0], args[1]);
+            WordLadder wordLadder = new WordLadder("d1.txt", args[0], args[1]);
+        }
+    }
+
+    public WordCollection buildCollectionForGUI(String guiFileName){
+          WordCollection guiCollection = new WordCollection(guiFileName);
+        return guiCollection;
+    }
+
+    public void setWordList(ArrayList<String> wordList) {
+        words = wordList;
+    }
 }
 
