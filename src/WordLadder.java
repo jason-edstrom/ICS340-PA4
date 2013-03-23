@@ -16,7 +16,7 @@ public class WordLadder {
     int words_size = 5;
     boolean sourceValid = false;
     boolean destinationValid = false;
-    ArrayList<String> leftover = null;
+    //ArrayList<String> leftover = null;
     ArrayList<String> builder = new ArrayList<String>();
     ArrayList<String> words = new ArrayList<String>();
     String buildSource = null;
@@ -95,10 +95,23 @@ public class WordLadder {
 
      words = selectedSizeCollection.getWords();
 
+        dictionary = g.getVertexMap();
+        /*leftover = selectedSizeCollection.getWords();
+        for (String s : words){
+        if (dictionary.containsValue(s)){
+            leftover.remove(s);
+        }
+        }
+        */
+        buildGraph();
+        findPath(source, destination, words_size);
 
 
 
-    before = System.currentTimeMillis();
+
+    }
+     public void buildGraph(){
+     before = System.currentTimeMillis();
      for (String s : words){
                          //
           builder = compareWords(s, words);                 //
@@ -110,27 +123,14 @@ public class WordLadder {
           buildDestination = net;
           g.addEdge(buildSource, buildDestination, cost);
           }
-
-
-
       }
       after  = System.currentTimeMillis();
       buildGraphTime = after - before;
       System.out.println( g.getVertexMapSize() + " vertices" );
       System.out.println("Time to build graph: " + buildGraphTime + " milliseconds");
-      dictionary = g.getVertexMap();
-        /*leftover = selectedSizeCollection.getWords();
-        for (String s : words){
-        if (dictionary.containsValue(s)){
-            leftover.remove(s);
-        }
-        }
-        */
-      findPath(source, destination);
-
-
-
     }
+
+
 
     private void userInput() {
      Scanner scanner = new Scanner(System.in);
@@ -142,12 +142,22 @@ public class WordLadder {
      destination = scanner.next();
     }
 
-    public void findPath(String passedSource, String passedDestination){
+    public void findPath(String passedSource, String passedDestination, int size){
+        words_size = size;
         before  = System.currentTimeMillis();
-        if (!(dictionary.containsKey(destination))){
+        dictionary = g.getVertexMap();
+        source = passedSource;
+        destination = passedDestination;
+        if (source.length() != words_size){
+            throw new IllegalArgumentException("Source word is not the correct length");
+        }
+        if (destination.length() != words_size){
+            throw new IllegalArgumentException("Destination word is not the correct length");
+        }
+        if (!(dictionary.containsKey(passedDestination))){
             throw new IllegalArgumentException(destination + " is unreachable by way of " + source + ".");
         }
-        if (!(dictionary.containsKey(source))){
+        if (!(dictionary.containsKey(passedSource))){
             throw new IllegalArgumentException(destination + " is unreachable by way of " + source + ".");
         }
         g.unweighted(passedSource);
@@ -158,6 +168,10 @@ public class WordLadder {
 
 
     }
+    public ArrayList<String>getResults(){
+        return g.getResults();
+    }
+
 
     public ArrayList<String> compareWords(String word1, ArrayList<String> wordsToTest){
         ArrayList<String> buildWords = new ArrayList<String>();
@@ -186,6 +200,10 @@ public class WordLadder {
 
 
         return words;
+    }
+
+    public void resetGraph(){
+        g.resetGraph();
     }
 
     public double getTimeForGraph(){

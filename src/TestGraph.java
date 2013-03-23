@@ -30,7 +30,9 @@ class Vertex{
         reset();
 
     }
-
+    public String getVertexWord(){
+        return word;
+    }
     public void reset (){
         prev = null;
         scratch = 0;
@@ -52,6 +54,8 @@ class Edge {
 public class TestGraph {
     public static final double INFINITY = Double.MAX_VALUE;
     private Map<String,Vertex> vertexMap = new HashMap<String,Vertex>( );
+    ArrayList<String> results = new ArrayList<String>();
+    double cost = 0;
 
     public int getVertexMapSize(){
         return vertexMap.size();
@@ -65,6 +69,14 @@ public class TestGraph {
         v.adj.add(new Edge (w, cost));
     }
 
+    public void resetGraph(){
+        clearAll();
+    }
+
+    public double getCost(){
+
+        return cost;
+    }
     public void printPath (String destWord){
         Vertex w = vertexMap.get(destWord);
         if ( w == null){
@@ -74,6 +86,7 @@ public class TestGraph {
         }
 
         else {
+            cost = w.dist;
             System.out.print( "( Cost is: " + w.dist + ") ");
             printPath( w );
             System.out.println();
@@ -97,12 +110,16 @@ public class TestGraph {
         The path is known to exist
          */
     private void printPath (Vertex dest){
+        results.add(dest.getVertexWord());
         if (dest.prev != null){
+            //results.add(dest.prev.getVertexWord());
             printPath(dest.prev);
             System.out.print(" to ");
+
         }
 
         System.out.print(dest.word);
+
     }
 
     private void clearAll(){
@@ -120,6 +137,10 @@ public class TestGraph {
         return vertexMap;
     }
 
+    public ArrayList<String> getResults(){
+
+        return results;
+    }
     public void unweighted (String sourceWord){
         clearAll();
 

@@ -3,12 +3,14 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.StringTokenizer;
 import javax.swing.*;
 import javax.swing.text.View;
 
 public class WordLadderGUI extends JFrame implements ActionListener {
     Growler view;
+    JFrame frame;
     TextArea taDictionary;
      TextField tfSourc;
      Label lblSourc;
@@ -22,6 +24,7 @@ public class WordLadderGUI extends JFrame implements ActionListener {
      JButton btFindPat;
      JLabel lblDictCoun;
      JLabel lblIndexing1;
+     JPanel testpanel;
       //JLabel lblIndexing2;
      //JLabel lblIndexing3;
      //JLabel lblIndexing4;
@@ -33,7 +36,7 @@ public class WordLadderGUI extends JFrame implements ActionListener {
     TextField tfWordSize;
     WordLadder wordLadder = null;
     WordCollection guiDictionary = null;
-
+    ArrayList<String> results = new ArrayList<String>();
 
 
    public WordLadderGUI()
@@ -57,7 +60,7 @@ public class WordLadderGUI extends JFrame implements ActionListener {
 	tfSourc.setLocation(224,90);
 	tfSourc.setSize(266,25);
 	tfSourc.setBackground( new Color(-1) );
-	tfSourc.setText("Source");
+	tfSourc.setText("");
 	tfSourc.setColumns(10);
 	getContentPane().add(tfSourc);
 
@@ -98,7 +101,7 @@ public class WordLadderGUI extends JFrame implements ActionListener {
 	tfSourc_6.setLocation(226,120);
 	tfSourc_6.setSize(263,25);
 	tfSourc_6.setBackground( new Color(-1) );
-	tfSourc_6.setText("Destination");
+	tfSourc_6.setText("");
 	tfSourc_6.setColumns(10);
 	getContentPane().add(tfSourc_6);
 
@@ -112,6 +115,8 @@ public class WordLadderGUI extends JFrame implements ActionListener {
 	tfFilePat.setLocation(224,0);
 	tfFilePat.setSize(266, 25);
 	tfFilePat.setBackground(new Color(-1));
+
+       //OS Detection
        if (System.getProperty("os.name").startsWith("Windows")) {
            // includes: Windows 2000,  Windows 95, Windows 98, Windows NT, Windows Vista, Windows XP
            tfFilePat.setText("c:\\ics340\\words.txt");
@@ -179,9 +184,9 @@ public class WordLadderGUI extends JFrame implements ActionListener {
     */
 	lblFindPat = new JLabel();
 	lblFindPat.setLocation(108,540);
-	lblFindPat.setSize(130,27);
+	lblFindPat.setSize(250,27);
 	lblFindPat.setForeground( new Color(-16777216) );
-	lblFindPat.setText("Time to find Path");
+	lblFindPat.setText("Time to find Path: 0 milliseconds");
 	getContentPane().add(lblFindPat);
 
        /*
@@ -196,9 +201,9 @@ public class WordLadderGUI extends JFrame implements ActionListener {
 
 	lblCos = new JLabel();
 	lblCos.setLocation(360,540);
-	lblCos.setSize(130,27);
+	lblCos.setSize(175,27);
 	lblCos.setForeground( new Color(-16777216) );
-	lblCos.setText("Total Cost is =");
+	lblCos.setText("Cost of Path: 0.0");
 	getContentPane().add(lblCos);
 
 	lblProgres = new JLabel();
@@ -207,6 +212,13 @@ public class WordLadderGUI extends JFrame implements ActionListener {
 	lblProgres.setForeground( new Color(-14646771) );
 	lblProgres.setText("Progress Bar");
 	getContentPane().add(lblProgres);
+
+       testpanel = new JPanel();
+       testpanel.setLocation(106,200);
+       testpanel.setSize(350,200);
+       testpanel.setForeground( new Color(-14646771) );
+       //testpanel.setText("Test Location");
+       getContentPane().add(testpanel);
 
        //add actionlisteners to buttons
        btFindPat.addActionListener(this);
@@ -230,11 +242,56 @@ public class WordLadderGUI extends JFrame implements ActionListener {
         Object obj = actionEvent.getSource();
 
         if (obj == btFindPat){
-           if (taDictionary.getText().isEmpty()){
+
+            testpanel.removeAll();
+            validate();
+            repaint();
+            if (taDictionary.getText().isEmpty()){
+            JOptionPane.showMessageDialog(frame,"Please load words so they appear in Text Area before Finding Path. ");
+
+            }else if( (tfSourc.getText().isEmpty()) || (tfSourc_6.getText().isEmpty())){
+                JOptionPane.showMessageDialog(frame,"Please enter Source and Destination words before Finding Path. ");
+            }else if (!(results.isEmpty())){
+                JOptionPane.showMessageDialog(frame,"Please clear results before continuing.");
+            }else{
+            wordLadder.findPath(tfSourc.getText(), tfSourc_6.getText(), Integer.parseInt(tfWordSize.getText()));
+            lblFindPat.setText("Time to find Path: " + String.valueOf(wordLadder.getTimeForPath()) + " milliseconds");
+            lblCos.setText("Cost of Path: " + String.valueOf(wordLadder.g.getCost()));
+            results = wordLadder.getResults();
+            Collections.reverse(results);
+                int x = 108;
+                int y = 200;
+              for (String s: results){
+                  x +=20;
+                  y +=20;
+                  JLabel _lbl = new JLabel(s);
+                  _lbl.setLocation(x,y);
+                  _lbl.setSize(100, 26);
+
+                  if ( results.indexOf(s) == 0){
+                      _lbl.setForeground(new Color(-14646771));
+                  } else if (results.indexOf(s) == (results.size()-1)){
+                      _lbl.setForeground( new Color(-8254711) );
+                  } else {
+                      _lbl.setForeground( new Color(-16777216) );
+                  }
+                  testpanel.add(_lbl);
+                  testpanel.repaint();
+
+              }
+
+            }
+           /*if (taDictionary.getText().isEmpty()){
            wordLadder = new WordLadder(tfFilePat.getText(), tfSourc.getText(), tfSourc_6.getText());
             }else if (!taDictionary.getText().isEmpty()){
-                 //word
-            }
+               ArrayList<String> taList = new ArrayList<String>();
+               StringTokenizer stringTokenizer = new StringTokenizer(taDump, "\t\n\r\f,\"");
+               while (stringTokenizer.hasMoreTokens()) {
+                   String token = stringTokenizer.nextToken();
+                   taList.add(token);
+               }
+             */
+            //}
         }
 
         if (obj == btLoadFil){
@@ -252,7 +309,8 @@ public class WordLadderGUI extends JFrame implements ActionListener {
             taDictionary.setText(guiDictionary.toString());
             lblIndexing1.setText("Indexing... done.");
             lblDictCoun.setText("Words in Dictionary = " + wordLadder.getWordList().size() +" words");
-
+            wordLadder.buildGraph();
+            System.out.println("Graph Built");
         }
 
         if (obj == btLoadTextFiel){
@@ -271,6 +329,8 @@ public class WordLadderGUI extends JFrame implements ActionListener {
             WordLadderGUI.showMessage("Loading " + wordLadder.getWordList().size() + " words from Text Field", Color.GREEN, Color.GREEN);
             lblIndexing1.setText("Indexing... done.");
             lblDictCoun.setText("Words in Dictionary = " + wordLadder.getWordList().size() +" words");
+            wordLadder.buildGraph();
+            System.out.println("Graph Built");
         }
 
 
