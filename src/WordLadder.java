@@ -44,6 +44,7 @@ public class WordLadder {
 
     public WordLadder(String gui_file_name, int word_length){
         WordCollection wordCollection = new WordCollection(gui_file_name);
+        words_size = word_length;
         //before = System.currentTimeMillis();
         WordCollection selectedSizeCollection = wordCollection.getCollectionAtSpecificLength(word_length);
         words = selectedSizeCollection.getWords();
@@ -177,7 +178,6 @@ public class WordLadder {
         ArrayList<String> buildWords = new ArrayList<String>();
         for (String word2 : wordsToTest){
         int mismatchCounter = 0;
-
         for (int index = 0; index < words_size; index++){
             if (word1.charAt(index) != word2.charAt(index)) {
                 mismatchCounter++;
@@ -244,6 +244,10 @@ public class WordLadder {
 
     public void setWordList(ArrayList<String> wordList) {
         words = wordList;
+    }
+
+    public void setWords_size(int size){
+        words_size = size;
     }
 }
 

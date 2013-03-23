@@ -25,6 +25,7 @@ public class WordLadderGUI extends JFrame implements ActionListener {
      JLabel lblDictCoun;
      JLabel lblIndexing1;
      JPanel testpanel;
+    JButton btClear;
       //JLabel lblIndexing2;
      //JLabel lblIndexing3;
      //JLabel lblIndexing4;
@@ -160,44 +161,14 @@ public class WordLadderGUI extends JFrame implements ActionListener {
 	lblIndexing1.setForeground( new Color(-16777216) );
 	lblIndexing1.setText("");
 	getContentPane().add(lblIndexing1);
-    /*
-	lblIndexing2 = new JLabel();
-	lblIndexing2.setLocation(107,454);
-	lblIndexing2.setSize(130,27);
-	lblIndexing2.setForeground( new Color(-16777216) );
-	lblIndexing2.setText("Indexin");
-	getContentPane().add(lblIndexing2);
 
-	lblIndexing3 = new JLabel();
-	lblIndexing3.setLocation(107,454);
-	lblIndexing3.setSize(130,27);
-	lblIndexing3.setForeground( new Color(-16777216) );
-	lblIndexing3.setText("Indexin");
-	getContentPane().add(lblIndexing3);
-
-	lblIndexing4 = new JLabel();
-	lblIndexing4.setLocation(107,454);
-	lblIndexing4.setSize(130,27);
-	lblIndexing4.setForeground( new Color(-16777216) );
-	lblIndexing4.setText("Indexin");
-	getContentPane().add(lblIndexing4);
-    */
 	lblFindPat = new JLabel();
 	lblFindPat.setLocation(108,540);
 	lblFindPat.setSize(250,27);
-	lblFindPat.setForeground( new Color(-16777216) );
+	lblFindPat.setForeground( new Color(-14646771) );
 	lblFindPat.setText("Time to find Path: 0 milliseconds");
 	getContentPane().add(lblFindPat);
 
-       /*
-	untitled_16 = new TextField();
-	untitled_16.setLocation(107,161);
-	untitled_16.setSize(384,293);
-	untitled_16.setBackground( new Color(-1) );
-	untitled_16.setText("text");
-	untitled_16.setColumns(10);
-	getContentPane().add(untitled_16);
-    */
 
 	lblCos = new JLabel();
 	lblCos.setLocation(360,540);
@@ -210,7 +181,7 @@ public class WordLadderGUI extends JFrame implements ActionListener {
 	lblProgres.setLocation(108,484);
 	lblProgres.setSize(371,26);
 	lblProgres.setForeground( new Color(-14646771) );
-	lblProgres.setText("Progress Bar");
+	lblProgres.setText("Time to Build Graph: 0 milliseconds");
 	getContentPane().add(lblProgres);
 
        testpanel = new JPanel();
@@ -220,10 +191,17 @@ public class WordLadderGUI extends JFrame implements ActionListener {
        //testpanel.setText("Test Location");
        getContentPane().add(testpanel);
 
+     btClear = new JButton();
+       btClear.setLocation(355, 513);
+       btClear.setSize(125, 25);
+       btClear.setText("Clear Results");
+       getContentPane().add(btClear);
+
        //add actionlisteners to buttons
        btFindPat.addActionListener(this);
        btLoadTextFiel.addActionListener(this);
        btLoadFil.addActionListener(this);
+       btClear.addActionListener(this);
 
 	setTitle("WordLadderGUI");
 	setSize(500,600);
@@ -251,7 +229,7 @@ public class WordLadderGUI extends JFrame implements ActionListener {
 
             }else if( (tfSourc.getText().isEmpty()) || (tfSourc_6.getText().isEmpty())){
                 JOptionPane.showMessageDialog(frame,"Please enter Source and Destination words before Finding Path. ");
-            }else if (!(results.isEmpty())){
+            }else if (testpanel.getComponents().length != 0){
                 JOptionPane.showMessageDialog(frame,"Please clear results before continuing.");
             }else{
             wordLadder.findPath(tfSourc.getText(), tfSourc_6.getText(), Integer.parseInt(tfWordSize.getText()));
@@ -259,8 +237,9 @@ public class WordLadderGUI extends JFrame implements ActionListener {
             lblCos.setText("Cost of Path: " + String.valueOf(wordLadder.g.getCost()));
             results = wordLadder.getResults();
             Collections.reverse(results);
-                int x = 108;
-                int y = 200;
+                int x = 10;
+                int y = 20;
+
               for (String s: results){
                   x +=20;
                   y +=20;
@@ -295,7 +274,8 @@ public class WordLadderGUI extends JFrame implements ActionListener {
         }
 
         if (obj == btLoadFil){
-            //clearData();
+            clearData();
+            //wordLadder.setWords_size(Integer.parseInt(tfWordSize.getText()));
             //String size = tfWordSize.getText();
             //int intSize = Integer.parseInt(size);
             //WordLadderGUI.showMessage("Loading words of" + tfWordSize.getText() + " characters from file: " + tfFilePat.getText(), Color.GREEN, Color.GREEN);
@@ -311,9 +291,11 @@ public class WordLadderGUI extends JFrame implements ActionListener {
             lblDictCoun.setText("Words in Dictionary = " + wordLadder.getWordList().size() +" words");
             wordLadder.buildGraph();
             System.out.println("Graph Built");
+            lblProgres.setText("Time to Build Graph: " + wordLadder.getTimeForGraph() + " milliseconds");
         }
 
         if (obj == btLoadTextFiel){
+            wordLadder.setWords_size(Integer.parseInt(tfWordSize.getText()));
             String taDump = taDictionary.getText();
             System.out.println("Loading Words from Text Area");
             lblIndexing1.setText("Indexing...");
@@ -331,8 +313,22 @@ public class WordLadderGUI extends JFrame implements ActionListener {
             lblDictCoun.setText("Words in Dictionary = " + wordLadder.getWordList().size() +" words");
             wordLadder.buildGraph();
             System.out.println("Graph Built");
+            lblProgres.setText("Time to Build Graph: " + wordLadder.getTimeForGraph() + " milliseconds");
         }
-
+        if (obj == btClear){
+            testpanel.removeAll();
+            testpanel.validate();
+            testpanel.repaint();
+            wordLadder = null;
+            lblCos.setText("Cost of Path: 0.0");
+            lblCos.repaint();
+            lblDictCoun.setText("Words in Dictionary = 0 words");
+            lblFindPat.setText("Time to find Path: 0 milliseconds");
+            tfSourc.setText("");
+            tfSourc_6.setText("");
+            taDictionary.setText("");
+            results = null;
+        }
 
     }
 
@@ -349,7 +345,7 @@ public class WordLadderGUI extends JFrame implements ActionListener {
         tfSourc.setText("");
         tfSourc_6.setText("");
         taDictionary.setText("");
-        tfWordSize.setText("");
+        //tfWordSize.setText("");
     }
 }
 
