@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.*;
 
 /**
@@ -10,6 +12,7 @@ import java.util.*;
  * Java Class: PACKAGE_NAME
  */
 public class WordLadder {
+    JFrame frame;
     private Map<String,Vertex> dictionary = new HashMap<String,Vertex>( );
     String source = null;
     String destination = null;
@@ -22,7 +25,7 @@ public class WordLadder {
     String buildSource = null;
     String buildDestination = null;
     TestGraph g = new TestGraph();
-
+    String wordLadderError = null;
     long before = 0;
     long after = 0;
     long buildGraphTime = 0;
@@ -71,9 +74,11 @@ public class WordLadder {
         userInput();
         }
         if (source.length() != words_size){
+            wordLadderError = "Source word is not the correct length";
             throw new IllegalArgumentException("Source word is not the correct length");
         }
         if (destination.length() != words_size){
+            wordLadderError =  "Destination word is not the correct length";
             throw new IllegalArgumentException("Destination word is not the correct length");
         }
 
@@ -81,13 +86,16 @@ public class WordLadder {
         destinationValid = selectedSizeCollection.compareWord(destination);
 
         if  ((!sourceValid) && (!destinationValid)){
+            wordLadderError = source + " and " + destination + " don't exist in the dictionary.";
             throw new IllegalArgumentException(source + " and " + destination + " don't exist in the dictionary.");
         }
 
         if  (!sourceValid){
+            wordLadderError = source + " doesn't exist in the dictionary.";
             throw new IllegalArgumentException(source + " doesn't exist in the dictionary.");
         }
         if  (!destinationValid){
+            wordLadderError = destination + " doesn't exist in the dictionary.";
             throw new IllegalArgumentException(destination + " doesn't exist in the dictionary.");
         }
       System.out.println("Source: " + source);
@@ -150,25 +158,44 @@ public class WordLadder {
         source = passedSource;
         destination = passedDestination;
         if (source.length() != words_size){
+            if (GraphicsEnvironment.isHeadless()){
             throw new IllegalArgumentException("Source word is not the correct length");
-        }
+            }else{
+                JOptionPane.showMessageDialog(frame,"Source word is not the correct length");
+            }
+        }else
         if (destination.length() != words_size){
+            if (GraphicsEnvironment.isHeadless()){
             throw new IllegalArgumentException("Destination word is not the correct length");
-        }
+            }else{
+                JOptionPane.showMessageDialog(frame,"Destination word is not the correct length");
+            }
+        }else
         if (!(dictionary.containsKey(passedDestination))){
+            if (GraphicsEnvironment.isHeadless()){
             throw new IllegalArgumentException(destination + " is unreachable by way of " + source + ".");
-        }
+            }else{
+                JOptionPane.showMessageDialog(frame,destination + " is unreachable by way of " + source + ".");
+            }
+        }else
         if (!(dictionary.containsKey(passedSource))){
+            if (GraphicsEnvironment.isHeadless()){
             throw new IllegalArgumentException(destination + " is unreachable by way of " + source + ".");
+            }else{
+                JOptionPane.showMessageDialog(frame,destination + " is unreachable by way of " + source + ".");
+            }
         }
         g.unweighted(passedSource);
         g.printPath(passedDestination);
         after  = System.currentTimeMillis();
         findPathTime = after - before;
         System.out.println("Time to find path: " + findPathTime  + " milliseconds");
-
-
     }
+
+    public String getWordLadderError(){
+        return wordLadderError;
+    }
+
     public ArrayList<String>getResults(){
         return g.getResults();
     }

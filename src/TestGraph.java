@@ -52,9 +52,10 @@ class Edge {
 }
 
 public class TestGraph {
+    private String graphError = null;
     public static final double INFINITY = Double.MAX_VALUE;
     private Map<String,Vertex> vertexMap = new HashMap<String,Vertex>( );
-    ArrayList<String> results = new ArrayList<String>();
+    private ArrayList<String> results = new ArrayList<String>();
     double cost = 0;
 
     public int getVertexMapSize(){
@@ -80,9 +81,10 @@ public class TestGraph {
     public void printPath (String destWord){
         Vertex w = vertexMap.get(destWord);
         if ( w == null){
-            throw new NoSuchElementException("Destination vertex not found");
+            throw new NoSuchElementException("Destination vertex not found: Does not fit into Graph");
         } else if (w.dist == INFINITY){
             System.out.println(destWord + " is unreachable.");
+            graphError = destWord + " is unreachable.";
         }
 
         else {
@@ -122,6 +124,10 @@ public class TestGraph {
 
     }
 
+    public String getGraphError(){
+        return graphError;
+    }
+
     private void clearAll(){
         for (Vertex v : vertexMap.values()){
             v.reset();
@@ -147,7 +153,7 @@ public class TestGraph {
         Vertex start = vertexMap.get(sourceWord);
 
         if (start == null){
-            throw new NoSuchElementException("Start vertex not found");
+            throw new NoSuchElementException("Start vertex not found: Does not fit into Graph");
         }
 
         Queue <Vertex> q = new LinkedList<Vertex>();

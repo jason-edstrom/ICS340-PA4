@@ -258,6 +258,17 @@ public class WordLadderGUI extends JFrame implements ActionListener {
                   testpanel.repaint();
 
               }
+                if (wordLadder.g.getCost() == 0){
+                    //if (wordLadder.g.getGraphError() != null){
+                    JLabel _lbl = new JLabel(wordLadder.g.getGraphError());
+                    _lbl.setLocation(x,y);
+                    _lbl.setSize(100, 26);
+                    testpanel.add(_lbl);
+                    testpanel.repaint();
+                   // }
+
+                    }
+
 
             }
            /*if (taDictionary.getText().isEmpty()){
@@ -328,6 +339,7 @@ public class WordLadderGUI extends JFrame implements ActionListener {
             tfSourc_6.setText("");
             taDictionary.setText("");
             results = null;
+            lblProgres.setText("Time to Build Graph: 0 milliseconds");
         }
 
     }
